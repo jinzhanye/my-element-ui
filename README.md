@@ -6,3 +6,4 @@
   ````html
   <span role="button" tabindex="0" onclick="handleBtnClick()" onKeyPress="handleBtnKeyPress()">Save</span>
   ````
+- $destroy

@@ -1,7 +1,8 @@
 import Vue from 'vue';
 import App from './App';
 import router from './router';
-import { install } from 'index';
+import './assets/theme-chalk/index.scss';
+import { install } from './index';
 
 Vue.config.productionTip = false;
 install(Vue);

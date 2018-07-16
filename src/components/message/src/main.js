@@ -7,7 +7,7 @@ let instance = {};
 let instances = [];
 let seed = 1;
 
-const Message = function (options = {}) {
+const messageFactory = function (options = {}) {
   if (Vue.prototype.$isServer) {
     return;
   }
@@ -20,15 +20,16 @@ const Message = function (options = {}) {
   let id = 'message_' + seed++;
 
   options.onClose = function () {
-    Message.close(id, userOnClose);
+    messageFactory.close(id, userOnClose);
   };
+  // 返回Vue Component实例
   instance = new MessageConstructor({ data: options });
   instance.id = id;
   // 如果 Vue 实例在实例化时没有收到 el 选项，则它处于“未挂载”状态，没有关联的 DOM 元素。
   // 可以使用 vm.$mount() 手动地挂载一个未挂载的实例。
   instance.vm = instance.$mount();
   document.body.appendChild(instance.vm.$el);
-  instance.vm.visiable = true;
+  instance.vm.visible = true;
   instance.dom = instance.vm.$el;
   instance.dom.style.zIndex = 999;
   instances.push(instance);
@@ -36,18 +37,18 @@ const Message = function (options = {}) {
 };
 
 ['success', 'warning', 'info', 'error'].forEach(type => {
-  Message[type] = options => {
+  messageFactory[type] = options => {
     if (typeof options === 'string') {
       options = {
         message: options
       };
     }
     options.type = type;
-    return Message(options);
+    return messageFactory(options);
   };
 });
 
-Message.close = function(id, userOnClose) {
+messageFactory.close = function(id, userOnClose) {
   for (let i = 0, len = instances.length; i < len; i++) {
     if (id === instances[i].id) {
       if (typeof userOnClose === 'function') {
@@ -59,10 +60,10 @@ Message.close = function(id, userOnClose) {
   }
 };
 
-Message.closeAll = function() {
+messageFactory.closeAll = function() {
   for (let i = instances.length - 1; i >= 0; i--) {
     instances[i].close();
   }
 };
 
-export default Message;
+export default messageFactory;

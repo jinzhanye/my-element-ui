@@ -1,6 +1,6 @@
-import Message from './components/message';
+import messageFactory from './components/message';
 
 export const install = function (Vue, ops = {}) {
-  Vue.prototype.$message = Message;
+  Vue.prototype.$message = messageFactory;
 };
 

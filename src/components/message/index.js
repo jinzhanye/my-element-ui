@@ -1,2 +1,2 @@
-import Message from './src/main.js';
-export default Message;
+import messageFactory from './src/main.js';
+export default messageFactory;

@@ -15,6 +15,7 @@
       <p v-if="!dangerouslyUseHTMLString" class="el-message__content">{{ message }}</p>
       <p v-else v-html="message" class="el-message__content"></p>
     </slot>
+    <i v-if="showClose" class="el-message__closeBtn el-icon-close" @click="close"></i>
   </div>
 </template>
 
@@ -62,7 +63,9 @@ export default {
 
   methods: {
     destroyElement() {
-      //
+      // $destroy用于完全销毁一个实例。清理它与其它实例的连接，解绑它的全部指令及事件监听器。
+      // 触发 beforeDestroy 和 destroyed 的钩子。
+      // TODO 官方文档并未提及参数true
       this.$destroy(true);
       this.$el.parentNode.removeChild(this.$el);
     },
@@ -105,7 +108,3 @@ export default {
   }
 };
 </script>
-
-<style lang="less" scoped>
-
-</style>
