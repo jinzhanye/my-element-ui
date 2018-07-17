@@ -1,7 +1,6 @@
 <template>
   <div class="el-table"
        :class="[]">
-
     <!--隐藏列:容纳 table 内容-->
     <div class="hidden-columns" ref="hiddenColumns">
       <slot></slot>
@@ -14,40 +13,6 @@
     <div class="el-table__body-wrapper">
       <table-body></table-body>
     </div>
-
-    <div class="el-table__footer-wrapper">
-      <table-footer></table-footer>
-    </div>
-
-    <!--左侧固定列-->
-    <div class="el-table__fixed">
-      <div class="el-table__fixed-header-wrapper" ref="fixedHeaderWrapper">
-        <table-header ref="fixedTableHeader"></table-header>
-      </div>
-      <div class="el-table__fixed-body-wrapper" ref="fixedBodyWrapper">
-        <table-body></table-body>
-        <div class="el-table__append-gutter"></div>
-      </div>
-      <div class="el-table__fixed-footer-wrapper" ref="fixedFooterWrapper">
-        <table-footer></table-footer>
-      </div>
-    </div>
-
-    <!--右侧固定列-->
-    <div class="el-table__fixed-right">
-      <div class="el-table__fixed-header-wrapper" ref="rightFixedHeaderWrapper">
-        <table-header ref="rightFixedTableHeader"></table-header>
-      </div>
-      <div class="el-table__fixed-body-wrapper" ref="rightFixedBodyWrapper">
-        <table-body></table-body>
-      </div>
-      <div class="el-table__fixed-footer-wrapper" ref="rightFixedFooterWrapper">
-        <table-footer></table-footer>
-      </div>
-    </div>
-
-    <!--右侧固定列补丁-->
-    <div class="el-table__fixed-right-patch"></div>
 
     <!--列宽调整代理-->
     <div class="el-table__column-resize-proxy"></div>
@@ -176,7 +141,3 @@ export default {
   },
 };
 </script>
-
-<style lang="less" scoped>
-
-</style>
