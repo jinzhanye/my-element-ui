@@ -1,13 +1,14 @@
 <template>
-  <div class="el-table"
-       :class="[]">
-    <!--隐藏列:容纳 table 内容-->
+  <div class="el-table">
+    <!-- 隐藏列: slot里容纳table-column -->
     <div class="hidden-columns" ref="hiddenColumns">
       <slot></slot>
     </div>
 
-    <div class="el-table__header-wrapper">
-      <table-header></table-header>
+    <div class="el-table__header-wrapper"
+         ref="headerWrapper">
+      <table-header ref="tableHeader"
+                    :store="store"></table-header>
     </div>
 
     <div class="el-table__body-wrapper">
@@ -29,7 +30,6 @@ import debounce from 'throttle-debounce/debounce';
 import { addResizeListener, removeResizeListener } from 'element-ui/src/utils/resize-event';
 // 处理鼠标滚动事件
 import Mousewheel from 'element-ui/src/directives/mousewheel';
-import Locale from 'element-ui/src/mixins/locale';
 // 调试相关
 import Migrating from 'element-ui/src/mixins/migrating';
 // 表格状态管理组件
@@ -44,9 +44,11 @@ let tableIdSeed = 1;
 export default {
   name: 'ElTable',
 
-  mixins: [Locale, Migrating],
+  mixins: [Migrating],
 
-  props: {},
+  props: {
+    data: { type: Array, default: () => [] }
+  },
 
   data() {
     const layout = new TableLayout();
@@ -57,76 +59,44 @@ export default {
     };
   },
 
-  computed: {
-    // 返回表格主体部分
-    bodyWrapper() {},
-    // 能否自动更新表格高度，height 属性为数值或具有固定列时可以
-    shouldUpdateHeight() {},
-    // 获取行选择集
-    selection() {},
-    // 获取列对象集合
-    columns() {},
-    // 获取表格数据
-    tableData() {},
-    // 获取左侧固定列集合
-    fixedColumns() {},
-    // 获取右侧固定列集合
-    rightFixedColumns() {},
-    // 计算表格高度
-    bodyHeight() {},
-    // 计算表格宽度
-    bodyWidth() {},
-    // 计算固定列表身高度
-    fixedBodyHeight() {},
-    // 计算固定列整体高度
-    fixedHeight() {},
+  components: {
+    TableHeader,
+    TableFooter,
+    TableBody,
   },
 
-  watch: {
-    height: {
-      immediate: true, // TODO ??
+  computed: {
+    columns() {},
+    data: {
+      immediate: true,
       handler(value) {
-        this.layout.setHeight(value);
-      },
-      maxHeight: {
-        immediate: true,
-        handler(value) {
-          this.layout.setMaxHeight(value);
-        },
-      },
-      currentRowKey(newVal) { // TODO ??
-        this.store.setCurrentRowKey(newVal);
-      },
-      expandRowKeys: {},
-
-      data: {// TODO ??
-        immediate: true,
-        handler(value) {
-
-        },
-      },
+        this.store.commit('setData', value);
+        if (this.$ready) {
+          this.$nextTick(() => {
+            this.doLayout();
+          });
+        }
+      }
+    },
+    tableData() {
+      return this.store.states.data;
     },
   },
 
   methods: {
-    // 切换行的选择状态
-    toggleRowSelection(row, selected) {},
-    // 清除行的选择集
-    clearSelection() {},
-    // 处理鼠标离开某行的事件
-    handleMouseLeave() {},
-    // 更新垂直滚动条位置
-    updateScrollY() {},
     // 绑定事件：处理鼠标滚动及调整大小事件
     bindEvents() {},
-    // 刷新表格布局
-    doLayout() {},
+    doLayout() {
+      // this.layout.updateColumnsWidth();
+      // if (this.shouldUpdateHeight) {
+      //   this.layout.updateElsHeight();
+      // }
+    },
   },
 
   created() {
     this.tableId = `el-table_${tableIdSeed}`;
     tableIdSeed += 1;
-    // 设置刷新布局的频度
     this.debouncedUpdateLayout = debounce(50, () => this.doLayout());
   },
 

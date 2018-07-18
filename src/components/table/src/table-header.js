@@ -2,6 +2,42 @@ import { hasClass, addClass, removeClass } from 'element-ui/src/utils/dom';
 import Vue from 'vue';
 import LayoutObserver from './layout-observer';
 
+const getAllColumns = (columns) => {
+  const result = [];
+  columns.forEach(column => {
+    if (column.children) {
+      result.push(column);
+      result.push.apply(result, getAllColumns(column.children));
+    } else {
+      result.push(column);
+    }
+  });
+
+  return result;
+};
+
+const convertToRows = (originColumns) => {
+  let maxLevel = 1;
+  const traverse = (column, parent) => {
+
+  };
+
+  originColumns.forEach((column) => {
+
+  });
+
+  const rows = [];
+  for (let i = 0; i < maxLevel; i++) {
+    rows.push([]);
+  }
+
+  const allColumns = getAllColumns(originColumns);
+  allColumns.forEach((column) => {
+  });
+
+  return rows;
+};
+
 export default {
   name: 'ElTableHeader',
 
@@ -56,7 +92,8 @@ export default {
                       rowspan={column.rowSpan}
                       style={this.getHeaderCellStyle(rowIndex, cellIndex, columns, column)}
                       class={this.getHeaderCellClass(rowIndex, cellIndex, columns, column)}>
-                    <div class={ ['cell', column.filteredValue && column.filteredValue.length > 0 ? 'highlight' : '', column.labelClassName] }>
+                    <div
+                      class={['cell', column.filteredValue && column.filteredValue.length > 0 ? 'highlight' : '', column.labelClassName]}>
                       {column.label}
                     </div>
                   </th>)
