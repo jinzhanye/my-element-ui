@@ -1,5 +1,3 @@
-import { hasClass, addClass, removeClass } from 'element-ui/src/utils/dom';
-import Vue from 'vue';
 import LayoutObserver from './layout-observer';
 
 const getAllColumns = (columns) => {

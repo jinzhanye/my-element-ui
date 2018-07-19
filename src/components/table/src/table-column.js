@@ -17,6 +17,9 @@ const defaults = {
 
 const forced = {
   index: {
+    //<ElTableColumn
+    //  type="index"
+     // width="50"/>
     renderHeader: function (h, { column }) {
       return column.label || '#';
     },
@@ -90,6 +93,8 @@ export default {
     prop: String,
     width: {},
     formatter: Function,
+    context: {},
+    index: [Number, Function],
   },
 
   data() {
@@ -169,18 +174,20 @@ export default {
     let renderCell = column.renderCell;
     let _self = this;
 
+    // 提供给table-body调用，，见源代码table-body.js line 69
     column.renderCell = function (createElement, data) {
-      //<template slot-scope="{row}">
-      //<span>{{row.frequentlyUsed | formatBoolean}}</span>
-      //</template>
       if (_self.$scopedSlots.default) {
         renderCell = () => _self.$scopedSlots.default(data);
+        //<template slot-scope="{row}">
+        //<span>{{row.frequentlyUsed | formatBoolean}}</span>
+        //</template>
       }
 
       if (!renderCell) {
         renderCell = DEFAULT_RENDER_CELL;
       }
 
+      /*<div className="cell">王小虎</div>*/
       return <div className="cell">{renderCell(h, data)}</div>;
     };
   },
@@ -191,8 +198,10 @@ export default {
     let columnIndex;
 
     if (!this.isSubColumn) {
+      // 如果不是嵌套列，序号就是在 table 中的位置
       columnIndex = [].indexOf.call(parent.$refs.hiddenColumns.children, this.$el);
     } else {
+      // 否则是在父级列的位置
       columnIndex = [].indexOf.call(parent.$el.children, this.$el);
     }
 

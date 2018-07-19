@@ -1,5 +1,3 @@
-/* eslint-disable no-underscore-dangle */
-
 import { getCell, getColumnByCell, getRowIdentity } from './util';
 import { getStyle, hasClass, addClass, removeClass } from 'element-ui/src/utils/dom';
 import ElCheckbox from 'element-ui/packages/checkbox';
@@ -13,7 +11,11 @@ export default {
   mixins: [LayoutObserver],
 
   props: {
+    store: {// 非常重要
+      required: true
+    },
     stripe: Boolean,
+    context: {},
     fixed: String,
     highlight: Boolean,
   },
@@ -59,34 +61,34 @@ export default {
           {this._l(this.columns, column => <col name={column.id}/>)}
         </colgroup>
         <tbody>
-          {
-            this._l(this.data, (row, $index) =>
-              [<tr style={this.rowStyle ? this.getRowStyle(row, $index) : null}
-                key={this.table.rowKey ? this.getKeyOfRow(row, $index) : $index}
-                on-click={$event => this.handleClick($event, row)}
-                class={[this.getRowClass(row, $index)]}>
-                {
-                  this._l(this.columns, (column, cellIndex) => {
-                    const { rowspan, colspan } = this.getSpan(row, column, $index, cellIndex);
-                    if (!rowspan || !colspan) {
-                      return '';
-                    }
+        {
+          this._l(this.data, (row, $index) =>
+            [<tr style={this.rowStyle ? this.getRowStyle(row, $index) : null}
+                 key={this.table.rowKey ? this.getKeyOfRow(row, $index) : $index}
+                 on-click={$event => this.handleClick($event, row)}
+                 class={[this.getRowClass(row, $index)]}>
+              {
+                this._l(this.columns, (column, cellIndex) => {
+                  const { rowspan, colspan } = this.getSpan(row, column, $index, cellIndex);
+                  if (!rowspan || !colspan) {
+                    return '';
+                  }
 
-                    if (rowspan === 1 && colspan === 1) {
-                      return (<td style={this.getCellStyle($index, cellIndex, row, column)}
-                        class={this.getCellClass($index, cellIndex, row, column)}>
-                      </td>);
-                    }
-
+                  if (rowspan === 1 && colspan === 1) {
                     return (<td style={this.getCellStyle($index, cellIndex, row, column)}
-                      class={this.getCellClass($index, cellIndex, row, column)}>
-
+                                class={this.getCellClass($index, cellIndex, row, column)}>
                     </td>);
-                  })
-                }
-              </tr>],
-            )
-          }
+                  }
+
+                  return (<td style={this.getCellStyle($index, cellIndex, row, column)}
+                              class={this.getCellClass($index, cellIndex, row, column)}>
+
+                  </td>);
+                })
+              }
+            </tr>],
+          )
+        }
         </tbody>
       </table>
     );

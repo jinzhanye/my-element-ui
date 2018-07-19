@@ -1,4 +1,3 @@
-/* eslint-disable no-restricted-syntax,no-prototype-builtins,prefer-const */
 import scrollbarWidth from 'element-ui/src/utils/scrollbar-width';
 import Vue from 'vue';
 
