@@ -94,9 +94,25 @@ TableStore.prototype.mutations = {
       this.updateColumns(); // hack for dynamics insert column ??
       this.scheduleLayout();
     }
+  },
+
+  removeColumn(states, column, parent) {
+    let array = states._columns;
+    if (parent) {
+      array = parent.children;
+      if (!array) array = parent.children = [];
+    }
+    if (array) {
+      array.splice(array.indexOf(column), 1);
+    }
+
+    if (this.table.$ready) {
+      this.updateColumns(); // hack for dynamics remove column
+      this.scheduleLayout();
+    }
   }
 };
-TableStore.prototype.commit = function commit() {
+TableStore.prototype.commit = function commit(name, ...args) {
   const mutations = this.mutations;
   if (mutations[name]) {
     mutations[name].apply(this, [this.states].concat(args));

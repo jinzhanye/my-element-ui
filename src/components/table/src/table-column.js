@@ -154,6 +154,7 @@ export default {
     this.$options.render = createElement => createElement('div', this.$slots.default);
 
     let type = this.type;
+    const width = parseWidth(this.width);
 
     let column = getDefaultColumn(type, {
       id: this.columnId,
@@ -205,7 +206,7 @@ export default {
       columnIndex = [].indexOf.call(parent.$el.children, this.$el);
     }
 
-    owner.store.commit('insertColumn', this.columnConfig);
+    owner.store.commit('insertColumn', this.columnConfig, columnIndex, this.isSubColumn ? parent.columnConfig : null);
   },
 
   destroyed() {

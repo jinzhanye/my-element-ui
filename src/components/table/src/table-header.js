@@ -17,11 +17,27 @@ const getAllColumns = (columns) => {
 const convertToRows = (originColumns) => {
   let maxLevel = 1;
   const traverse = (column, parent) => {
-
+    if (parent) {
+      column.level = parent.level + 1;
+      if (maxLevel < column.level) {
+        maxLevel = column.level;
+      }
+    }
+    if (column.children) {
+      let colSpan = 0;
+      column.children.forEach((subColumn) => {
+        traverse(subColumn, column);
+        colSpan += subColumn.colSpan;
+      });
+      column.colSpan = colSpan;
+    } else {
+      column.colSpan = 1;
+    }
   };
 
   originColumns.forEach((column) => {
-
+    column.level = 1;
+    traverse(column);
   });
 
   const rows = [];
@@ -30,7 +46,14 @@ const convertToRows = (originColumns) => {
   }
 
   const allColumns = getAllColumns(originColumns);
+
   allColumns.forEach((column) => {
+    if (!column.children) {
+      column.rowSpan = maxLevel - column.level + 1;
+    } else {
+      column.rowSpan = 1;
+    }
+    rows[column.level - 1].push(column);
   });
 
   return rows;
@@ -42,6 +65,9 @@ export default {
   mixin: [LayoutObserver],
 
   props: {
+    store: {
+      required: true
+    },
     border: Boolean,
   },
 
@@ -57,11 +83,15 @@ export default {
     table() {
       return this.$parent;
     },
+    columns() {
+      return this.store.states.columns;
+    },
   },
 
   render(createElement) {
     const originColumns = this.store.states.originColumns;
     const columnRows = convertToRows(originColumns, this.columns);
+    debugger
     // 是否拥有多级表头
     const isGroup = columnRows.length > 1;
     if (isGroup) this.$parent.isGroup = true;
@@ -83,7 +113,8 @@ export default {
           this._l(columnRows, (columns, rowIndex) =>
             <tr
               style={this.getHeaderRowStyle(rowIndex)}
-              className={this.getHeaderRowClass(rowIndex)}>
+              className={this.getHeaderRowClass(rowIndex)}
+            >
               {
                 this._l(columns, (column, cellIndex) =>
                   <th colspan={column.colSpan}
@@ -106,6 +137,19 @@ export default {
   },
 
   methods: {
+    getHeaderCellStyle(rowIndex, columnIndex, row, column) {
+      return '';
+    },
+
+    getHeaderCellClass(rowIndex, columnIndex, row, column) {
+      return '';
+    },
+    getHeaderRowStyle(rowIndex) {
+      return '';
+    },
+    getHeaderRowClass(rowIndex) {
+      return '';
+    },
     hasGutter() {
       return !this.fixed && this.tableLayout.gutterWidth;
     }

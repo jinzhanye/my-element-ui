@@ -18,7 +18,7 @@ this.$options.render = createElement => createElement('div', this.$slots.default
 
 table-layout是对整个表格宽高等布局进行修改的。 简单的表格暂用不上
 
-table.vue 
+table.vue
  
 props里的context的作用是？？文档中未提及该属性
 <slot name="append"></slot>
@@ -34,17 +34,16 @@ mounted() {
 ````
 
 ### table-column
-create 中生成column，并绑定column.renderCell函数供table-body使用
+1. created:生成column，并为column绑定renderCell函数供table-body使用
+2. mounted:设置_columns
 
-设置_columns
-````
-mounted() {
-    owner.store.commit('insertColumn', this.columnConfig, columnIndex, this.isSubColumn ? parent.columnConfig : null);
-}
-````
+  ````
+  mounted() {
+      owner.store.commit('insertColumn', this.columnConfig, columnIndex, this.isSubColumn ? parent.columnConfig : null);
+  }
+  ````
 
 ### table-store
-
 updateColumns 设置 columns，columns是_columns进行一系列操作后得到的
 
 ````js

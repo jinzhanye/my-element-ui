@@ -2,7 +2,6 @@
   <div class="hello">
     <h1>{{ msg }}</h1>
     <h2>Essential Links</h2>
-    <ElButton type="primary">主要按钮</ElButton>
 
     <ElTable
       :data="tableData"
@@ -49,12 +48,12 @@ export default {
   },
 
   mounted() {
-    this.$message({
-      showClose: true,
-      type: 'success',
-      message: '这是一条消息？',
-      duration: 0
-    });
+    // this.$message({
+    //   showClose: true,
+    //   type: 'success',
+    //   message: '这是一条消息？',
+    //   duration: 0
+    // });
   }
 };
 </script>

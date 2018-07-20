@@ -63,11 +63,17 @@ export default {
     context: {},
     emptyText: String,// 无数据时显示的文本内容，默认为“暂无数据”
     spanMethod: Function,// 用于合并行或列
+
+    headerRowClassName: [String, Function],
+    headerRowStyle: [Object, Function],
   },
 
   data() {
-    const layout = new TableLayout();
-    const store = new TableStore();
+    const store = new TableStore(this);
+    const layout = new TableLayout({
+      store,
+      table: this,
+    });
     return {
       layout,
       store,
