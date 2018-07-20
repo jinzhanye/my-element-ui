@@ -16,18 +16,6 @@
       <table-body :context="context"
                   :store="store"
                   :stripe="stripe"></table-body>
-      <div v-if="!data || data.length === 0"
-           class="el-table__empty-block"
-           ref="emptyBlock">
-        <span class="el-table__empty-text">
-          <slot name="empty">{{ emptyText || t('el.table.emptyText')}}</slot>
-        </span>
-      </div>
-      <div v-if="$slots.append"
-           class="el-table__append-wrapper"
-           ref="appendWrapper">
-        <slot name="append"></slot>
-      </div>
     </div>
 
     <!--列宽调整代理-->
@@ -111,14 +99,8 @@ export default {
   },
 
   methods: {
-    // 绑定事件：处理鼠标滚动及调整大小事件
     bindEvents() {},
-    doLayout() {
-      // this.layout.updateColumnsWidth();
-      // if (this.shouldUpdateHeight) {
-      //   this.layout.updateElsHeight();
-      // }
-    },
+    doLayout() {},
   },
 
   created() {

@@ -7,6 +7,9 @@
       :data="tableData"
       style="width: 100%">
       <ElTableColumn
+        type="index"
+        width="50"/>
+      <ElTableColumn
         prop="date"
         label="日期"
         width="180"/>

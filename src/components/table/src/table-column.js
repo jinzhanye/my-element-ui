@@ -163,6 +163,7 @@ export default {
       property: this.prop || this.property,// 旧版element ui为property，现在的版本是prop
       type,
       renderCell: null,
+      renderHeader: this.renderHeader,
       width,
       context: this.context,
       index: this.index,
