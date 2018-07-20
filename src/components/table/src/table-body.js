@@ -75,12 +75,39 @@ export default {
                   if (rowspan === 1 && colspan === 1) {
                     return (<td style={this.getCellStyle($index, cellIndex, row, column)}
                                 class={this.getCellClass($index, cellIndex, row, column)}>
+                      {
+                        column.renderCell.call(
+                          this._renderProxy,
+                          createElement,
+                          {
+                            row,
+                            column,
+                            $index,
+                            store: this.store,
+                            _self: this.context || this.table.$vnode.context
+                          },
+                          columnsHidden[cellIndex]
+                        )
+                      }
                     </td>);
                   }
 
                   return (<td style={this.getCellStyle($index, cellIndex, row, column)}
                               class={this.getCellClass($index, cellIndex, row, column)}>
-
+                    {
+                      column.renderCell.call(
+                        this._renderProxy,
+                        h,
+                        {
+                          row,
+                          column,
+                          $index,
+                          store: this.store,
+                          _self: this.context || this.table.$vnode.context
+                        },
+                        columnsHidden[cellIndex]
+                      )
+                    }
                   </td>);
                 })
               }
@@ -98,6 +125,28 @@ export default {
   },
 
   methods: {
+    getRowClass(row, rowIndex) {
+      return '';
+    },
+
+    getCellStyle(rowIndex, columnIndex, row, column) {
+      return ''
+    },
+
+    getCellClass(rowIndex, columnIndex, row, column) {
+      return '';
+    },
+
+    getSpan(row, column, rowIndex, columnIndex) {
+      let rowspan = 1;
+      let colspan = 1;
+
+      return {
+        rowspan,
+        colspan
+      };
+    },
+
     isColumnHidden() {
       return false;
     },

@@ -34,7 +34,7 @@ mounted() {
 ````
 
 ### table-column
-1. created:生成column，并为column绑定renderCell函数供table-body使用
+1. created:生成column，并为column绑定`renderCell函数`供table-body使用
 2. mounted:设置_columns
 
   ````

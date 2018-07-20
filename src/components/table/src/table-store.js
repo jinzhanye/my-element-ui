@@ -72,6 +72,7 @@ TableStore.prototype.mutations = {
   setData(states, data) {
     const dataInstanceChanged = states._data !== data;
     states._data = data;
+    states.data = data;
   },
 
   insertColumn(states, column, index, parent) {
