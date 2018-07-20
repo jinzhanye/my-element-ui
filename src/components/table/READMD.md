@@ -33,6 +33,22 @@ mounted() {
 }     
 ````
 
+初始化store与layout
+
+````js
+  data() {
+    const store = new TableStore(this);
+    const layout = new TableLayout({
+      store,
+      table: this,
+    });
+    return {
+      layout, // layout-observer会引用到layout
+      store,
+    };
+  },
+````
+
 ### table-column
 1. created:生成column，并为column绑定`renderCell函数`供table-body使用
 2. mounted:设置_columns

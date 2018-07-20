@@ -1,9 +1,5 @@
-import LayoutObserver from './layout-observer';
-
 export default {
   name: 'ElTableBody',
-
-  mixins: [LayoutObserver],
 
   props: {
     store: {

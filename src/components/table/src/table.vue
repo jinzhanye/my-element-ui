@@ -27,61 +27,33 @@
 <script>
 // 控制操作频度的组件
 import debounce from 'throttle-debounce/debounce';
-// 调试相关
-import Migrating from 'element-ui/src/mixins/migrating';
-import Locale from 'element-ui/src/mixins/locale';
-// 表格状态管理组件
+// 表格状态管理工具
 import TableStore from './table-store';
-import TableLayout from './table-layout';
 import TableBody from './table-body';
 import TableHeader from './table-header';
-import TableFooter from './table-footer';
 
 let tableIdSeed = 1;
 
 export default {
   name: 'ElTable',
 
-  mixins: [Locale, Migrating],
-
   props: {
     data: { type: Array, default: () => [] },
     stripe: Boolean,// 条纹
     border: Boolean,
     context: {},
-    emptyText: String,// 无数据时显示的文本内容，默认为“暂无数据”
-    spanMethod: Function,// 用于合并行或列
-
-    headerRowClassName: [String, Function],
-    headerRowStyle: [Object, Function],
   },
 
   data() {
     const store = new TableStore(this);
-    const layout = new TableLayout({
-      store,
-      table: this,
-    });
     return {
-      layout,
       store,
     };
   },
 
   components: {
     TableHeader,
-    TableFooter,
     TableBody,
-  },
-
-  computed: {
-    bodyWrapper() {
-      return this.$refs.bodyWrapper;
-    },
-    tableData() {
-      return this.store.states.data;
-    },
-    columns() {},
   },
 
   watch: {
@@ -99,8 +71,9 @@ export default {
   },
 
   methods: {
-    bindEvents() {},
-    doLayout() {},
+    doLayout() {
+      console.log('doLayout executed');
+    },
   },
 
   created() {
@@ -111,7 +84,6 @@ export default {
   },
 
   mounted() {
-    this.bindEvents();
     this.store.updateColumns();
     this.doLayout();
     this.$ready = true;
