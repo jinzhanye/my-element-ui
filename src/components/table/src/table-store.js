@@ -1,17 +1,11 @@
 /* Table状态管理 */
 
-import Vue from 'vue';
-import debounce from 'throttle-debounce/debounce';
-import merge from 'element-ui/src/utils/merge';
-import { hasClass, addClass, removeClass } from 'element-ui/src/utils/dom';
-import { orderBy, getColumnById, getRowIdentity } from './util';
-
 const TableStore = function (table, initialState = {}) {
   if (!table) {
     throw new Error('Table is required.');
   }
-  this.table = table;
 
+  this.table = table;
   this.states = {
     _columns: [],
     originColumns: [],
@@ -69,6 +63,7 @@ TableStore.prototype.updateColumns = function () {
 };
 
 TableStore.prototype.mutations = {
+  // table.vue watch.data 调用
   setData(states, data) {
     const dataInstanceChanged = states._data !== data;
     states._data = data;
@@ -91,8 +86,9 @@ TableStore.prototype.mutations = {
       array.push(column);
     }
 
+    // 只有在表格渲染后动态添加列才会执行以下
     if (this.table.$ready) {
-      this.updateColumns(); // hack for dynamics insert column ??
+      this.updateColumns(); // hack for dynamics insert column
       this.scheduleLayout();
     }
   },

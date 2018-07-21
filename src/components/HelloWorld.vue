@@ -12,7 +12,8 @@
       <ElTableColumn
         prop="date"
         label="日期"
-        width="180"/>
+        width="180"
+        :formatter="dateFormatter"/>
       <ElTableColumn
         prop="name"
         label="姓名"
@@ -31,23 +32,33 @@ export default {
     return {
       msg: 'Welcome to Your Vue.js App',
       tableData: [{
-        date: '2016-05-02',
+        date: new Date(),
         name: '王小虎',
-        address: '上海市普陀区金沙江路 1518 弄'
+        address: '上海市普陀区金沙江路 1518 弄',
+        enable:true,
       }, {
-        date: '2016-05-04',
+        date: new Date(),
         name: '王小虎',
-        address: '上海市普陀区金沙江路 1517 弄'
+        address: '上海市普陀区金沙江路 1517 弄',
+        enable:false,
       }, {
-        date: '2016-05-01',
+        date: new Date(),
         name: '王小虎',
-        address: '上海市普陀区金沙江路 1519 弄'
+        address: '上海市普陀区金沙江路 1519 弄',
+        enable:true,
       }, {
-        date: '2016-05-03',
+        date: new Date(),
         name: '王小虎',
-        address: '上海市普陀区金沙江路 1516 弄'
+        address: '上海市普陀区金沙江路 1516 弄',
+        enable:true,
       }]
     };
+  },
+
+  methods: {
+    dateFormatter(row, column, value, index) {
+      return row.date.toString();
+    }
   },
 
   mounted() {

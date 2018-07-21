@@ -19,7 +19,7 @@ const forced = {
   index: {
     //<ElTableColumn
     //  type="index"
-     // width="50"/>
+    // width="50"/>
     renderHeader: function (h, { column }) {
       return column.label || '#';
     },
@@ -94,7 +94,7 @@ export default {
     width: {},
     formatter: Function,
     context: {},
-    index: [Number, Function],
+    index: [Number, Function], // 用于指定列位置
   },
 
   data() {
@@ -127,9 +127,9 @@ export default {
   },
 
   computed: {
-    owner() {
+    owner() {// 寻找拥有tableId的外层组件
       let parent = this.$parent;
-      while (parent && !parent.tableId) {
+      while (parent && !parent.tableId) {// 见table.vue line 454，为tableId赋值
         parent = parent.$parent;
       }
       return parent;
@@ -150,8 +150,13 @@ export default {
   },
 
   created() {
-    this.customRender = this.$options.render;
+    this.customRender = this.$options.render;// 暂时未清楚customRender在哪里使用
     this.$options.render = createElement => createElement('div', this.$slots.default);
+
+    let parent = this.columnOrTableParent;
+    let owner = this.owner;
+    this.isSubColumn = owner !== parent;
+    this.columnId = (parent.tableId || parent.columnId) + '_column_' + columnIdSeed++;
 
     let type = this.type;
     const width = parseWidth(this.width);
@@ -161,10 +166,11 @@ export default {
       columnKey: this.columnKey,
       label: this.label,
       property: this.prop || this.property,// 旧版element ui为property，现在的版本是prop
-      type,
+      type, // selection、index、expand
       renderCell: null,
-      renderHeader: this.renderHeader,
+      renderHeader: this.renderHeader, // 提供给table-column， table-column.js line 112
       width,
+      formatter: this.formatter,
       context: this.context,
       index: this.index,
     });
@@ -176,7 +182,7 @@ export default {
     let renderCell = column.renderCell;
     let _self = this;
 
-    // 提供给table-body调用，，见源代码table-body.js line 69
+    // 提供给table-body， table-body.js line 69
     column.renderCell = function (createElement, data) {
       if (_self.$scopedSlots.default) {
         renderCell = () => _self.$scopedSlots.default(data);
@@ -185,12 +191,12 @@ export default {
         //</template>
       }
 
-      if (!renderCell) {
+      if (!renderCell) {// table-header不渲染index的栏走这里，
         renderCell = DEFAULT_RENDER_CELL;
       }
 
       /*<div className="cell">王小虎</div>*/
-      return <div className="cell">{renderCell(h, data)}</div>;
+      return <div className="cell">{renderCell(createElement, data)}</div>;
     };
   },
 
@@ -200,13 +206,13 @@ export default {
     let columnIndex;
 
     if (!this.isSubColumn) {
-      // 如果不是嵌套列，序号就是在 table 中的位置
+      // 如果不是嵌套列，序号是table-column标签顺序
       columnIndex = [].indexOf.call(parent.$refs.hiddenColumns.children, this.$el);
     } else {
       // 否则是在父级列的位置
       columnIndex = [].indexOf.call(parent.$el.children, this.$el);
     }
-
+    // 向state._columns添加当前列
     owner.store.commit('insertColumn', this.columnConfig, columnIndex, this.isSubColumn ? parent.columnConfig : null);
   },
 

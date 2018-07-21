@@ -1,4 +1,5 @@
 import LayoutObserver from './layout-observer';
+import TableStore from "./table-store";
 
 const getAllColumns = (columns) => {
   const result = [];
@@ -84,12 +85,18 @@ export default {
       return this.$parent;
     },
     columns() {
+      // table-store.js 的 TableStore.prototype.updateColumns 会更新 columns，以下情况会调用updateColumns
+
+      // 在table.vue mounted阶段会更新columns
+      // 如果当表格渲染完成再动态添加列,table-column 在 mounted阶段也会更新columns
       return this.store.states.columns;
     },
   },
 
   render(createElement) {
+    // originColumns的更新与 computed.columns一样
     const originColumns = this.store.states.originColumns;
+    // 非多级表头情况下，columnRows是一个嵌套数组 [[col1,col2,col3,...]]
     const columnRows = convertToRows(originColumns, this.columns);
     // 是否拥有多级表头
     const isGroup = columnRows.length > 1;
@@ -100,11 +107,10 @@ export default {
              cellpadding="0"
              border="0">
         <colgroup>
+          {/*<col name="el-table_21_column_90" width="180">*/}
+          {/* column.id在table-column line237赋值*/}
           {
-            this._l(this.columns, column => <col name={column.id}/>)
-          }
-          {
-            this.hasGutter ? <col name="gutter"/> : ''
+            this._l(this.columns, column => <col name={ column.id } />)
           }
         </colgroup>
         <thead>
@@ -122,6 +128,7 @@ export default {
                       class={this.getHeaderCellClass(rowIndex, cellIndex, columns, column)}>
                     <div
                       class={['cell', column.filteredValue && column.filteredValue.length > 0 ? 'highlight' : '', column.labelClassName]}>
+                      {/*先渲染table-column，而column.renderHeader是在table-column中绑定的*/}
                       {
                         column.renderHeader
                           ? column.renderHeader.call(this._renderProxy, h, { column, $index: cellIndex, store: this.store, _self: this.$parent.$vnode.context })
@@ -129,9 +136,6 @@ export default {
                       }
                     </div>
                   </th>)
-              }
-              {
-                this.hasGutter ? <th class="gutter"></th> : ''
               }
             </tr>)
         }
@@ -153,8 +157,5 @@ export default {
     getHeaderRowClass(rowIndex) {
       return '';
     },
-    hasGutter() {
-      return !this.fixed && this.tableLayout.gutterWidth;
-    }
   }
 }

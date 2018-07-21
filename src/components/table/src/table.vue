@@ -20,7 +20,6 @@
 
     <!--列宽调整代理-->
     <div class="el-table__column-resize-proxy"></div>
-
   </div>
 </template>
 
@@ -60,6 +59,7 @@ export default {
     data: {
       immediate: true,
       handler(value) {
+        // 供 table-body computed.data 使用
         this.store.commit('setData', value);
         if (this.$ready) {
           this.$nextTick(() => {
@@ -84,8 +84,10 @@ export default {
   },
 
   mounted() {
+    // 更新columns与originColumns从而触发table-header、table-body更新
     this.store.updateColumns();
     this.doLayout();
+    // 标记table组件已经mounted，table-store.js的insertColumn也以此来判断需不需调用updateColumn
     this.$ready = true;
   },
 };

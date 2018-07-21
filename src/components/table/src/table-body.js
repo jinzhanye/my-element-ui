@@ -23,6 +23,7 @@ export default {
     },
 
     data() {
+      // table.vue watch.data 中 调用 setData 在store 中存储 data
       return this.store.states.data;
     },
 
@@ -44,6 +45,7 @@ export default {
         cellpadding="0"
         border="0">
         <colgroup>
+          {/*控制宽度与table-header的colgroup同步*/}
           {this._l(this.columns, column => <col name={column.id}/>)}
         </colgroup>
         <tbody>
