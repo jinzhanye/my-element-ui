@@ -8,26 +8,35 @@
     <div class="el-table__header-wrapper"
          ref="headerWrapper">
       <table-header ref="tableHeader"
-                    :store="store"></table-header>
+                    :store="store"
+                    :style="{
+                        width: layout.bodyWidth ? layout.bodyWidth + 'px' : ''
+                    }">
+      </table-header>
     </div>
 
     <div class="el-table__body-wrapper"
          ref="bodyWrapper">
       <table-body :context="context"
                   :store="store"
-                  :stripe="stripe"></table-body>
+                  :stripe="stripe"
+                  :style="{
+                      width: bodyWidth
+                  }">></table-body>
     </div>
 
     <!--列宽调整代理-->
-    <div class="el-table__column-resize-proxy"></div>
+    <div class="el-table__column-resize-proxy" ref="resizeProxy" v-show="resizeProxyVisible"></div>
   </div>
 </template>
 
 <script>
 // 控制操作频度的组件
 import debounce from 'throttle-debounce/debounce';
+import { addResizeListener, removeResizeListener } from 'element-ui/src/utils/resize-event';
 // 表格状态管理工具
 import TableStore from './table-store';
+import TableLayout from './table-layout';
 import TableBody from './table-body';
 import TableHeader from './table-header';
 
@@ -41,13 +50,46 @@ export default {
     stripe: Boolean,// 条纹
     border: Boolean,
     context: {},
+    fit: {
+      type: Boolean,
+      default: true
+    },
   },
 
   data() {
     const store = new TableStore(this);
-    return {
+    const layout = new TableLayout({
       store,
+      table: this,
+    });
+    return {
+      layout,
+      store,
+      resizeProxyVisible: false,
+      resizeState: {
+        width: null,
+        height: null
+      },
     };
+  },
+
+  computed: {
+    bodyWrapper() {
+      return this.$refs.bodyWrapper;
+    },
+    // 供table-layout.js 的 getFlattenColumns 使用
+    columns() {
+      return this.store.states.columns;
+    },
+
+    tableData() {
+      return this.store.states.data;
+    },
+
+    bodyWidth() {
+      const { bodyWidth, scrollY, gutterWidth } = this.layout;
+      return bodyWidth ? bodyWidth - (scrollY ? gutterWidth : 0) + 'px' : '';
+    },
   },
 
   components: {
@@ -73,6 +115,56 @@ export default {
   methods: {
     doLayout() {
       console.log('doLayout executed');
+      this.layout.updateColumnsWidth();
+    },
+
+    resizeListener() {
+      if (!this.$ready) return;
+      let shouldUpdateLayout = false;
+      const el = this.$el;
+      const { width: oldWidth, height: oldHeight } = this.resizeState;
+
+      const width = el.offsetWidth;
+      if (oldWidth !== width) {
+        shouldUpdateLayout = true;
+      }
+
+      const height = el.offsetHeight;
+      if ((this.height || this.shouldUpdateHeight) && oldHeight !== height) {
+        shouldUpdateLayout = true;
+      }
+
+      if (shouldUpdateLayout) {
+        this.resizeState.width = width;
+        this.resizeState.height = height;
+        this.doLayout();
+      }
+    },
+
+    bindEvents() {
+      const { headerWrapper, footerWrapper } = this.$refs;
+      const refs = this.$refs;
+      let self = this;
+
+      this.bodyWrapper.addEventListener('scroll', function() {
+        if (headerWrapper) headerWrapper.scrollLeft = this.scrollLeft;
+        if (footerWrapper) footerWrapper.scrollLeft = this.scrollLeft;
+        if (refs.fixedBodyWrapper) refs.fixedBodyWrapper.scrollTop = this.scrollTop;
+        if (refs.rightFixedBodyWrapper) refs.rightFixedBodyWrapper.scrollTop = this.scrollTop;
+        const maxScrollLeftPosition = this.scrollWidth - this.offsetWidth - 1;
+        const scrollLeft = this.scrollLeft;
+        if (scrollLeft >= maxScrollLeftPosition) {
+          self.scrollPosition = 'right';
+        } else if (scrollLeft === 0) {
+          self.scrollPosition = 'left';
+        } else {
+          self.scrollPosition = 'middle';
+        }
+      });
+
+      if (this.fit) {
+        addResizeListener(this.$el, this.resizeListener);
+      }
     },
   },
 
@@ -84,11 +176,22 @@ export default {
   },
 
   mounted() {
+    this.bindEvents();
     // 更新columns与originColumns从而触发table-header、table-body更新
     this.store.updateColumns();
-    this.doLayout();
+
+    this.resizeState = {
+      width: this.$el.offsetWidth,
+      height: this.$el.offsetHeight
+    };
+
+   this.doLayout();
     // 标记table组件已经mounted，table-store.js的insertColumn也以此来判断需不需调用updateColumn
     this.$ready = true;
+  },
+
+  destroyed() {
+    if (this.resizeListener) removeResizeListener(this.$el, this.resizeListener);
   },
 };
 </script>

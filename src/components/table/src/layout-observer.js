@@ -14,9 +14,27 @@ export default {
     },
   },
 
-  methods: {// TODO
-    onColumnsChange() {},
-    onScrollableChange() {},
+  methods: {
+    onColumnsChange() {
+      const cols = this.$el.querySelectorAll('colgroup > col');
+      if (!cols.length) return;
+      const flattenColumns = this.tableLayout.getFlattenColumns();
+      const columnsMap = {};
+      flattenColumns.forEach((column) => {
+        columnsMap[column.id] = column;
+      });
+      for (let i = 0, j = cols.length; i < j; i++) {
+        const col = cols[i];
+        const name = col.getAttribute('name');
+        const column = columnsMap[name];
+        if (column) {
+          col.setAttribute('width', column.realWidth || column.width);
+        }
+      }
+    },
+    onScrollableChange() {
+      // TODO
+    },
   },
 
   created() {

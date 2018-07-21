@@ -50,6 +50,7 @@ const DEFAULT_RENDER_CELL = function (h, { row, column, $index }) {
 
 const parseWidth = (width) => {
   if (width !== undefined) {
+    // width不能写成百分比
     width = parseInt(width, 10);
     if (isNaN(width)) {
       width = null;
@@ -92,6 +93,7 @@ export default {
     label: String,
     prop: String,
     width: {},
+    minWidth: {},
     formatter: Function,
     context: {},
     index: [Number, Function], // 用于指定列位置

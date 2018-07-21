@@ -1,5 +1,4 @@
 import LayoutObserver from './layout-observer';
-import TableStore from "./table-store";
 
 const getAllColumns = (columns) => {
   const result = [];
@@ -63,7 +62,7 @@ const convertToRows = (originColumns) => {
 export default {
   name: 'ElTableHeader',
 
-  mixin: [LayoutObserver],
+  mixins: [LayoutObserver],
 
   props: {
     store: {
@@ -110,7 +109,7 @@ export default {
           {/*<col name="el-table_21_column_90" width="180">*/}
           {/* column.id在table-column line237赋值*/}
           {
-            this._l(this.columns, column => <col name={ column.id } />)
+            this._l(this.columns, column => <col name={column.id}/>)
           }
         </colgroup>
         <thead>
@@ -131,7 +130,12 @@ export default {
                       {/*先渲染table-column，而column.renderHeader是在table-column中绑定的*/}
                       {
                         column.renderHeader
-                          ? column.renderHeader.call(this._renderProxy, h, { column, $index: cellIndex, store: this.store, _self: this.$parent.$vnode.context })
+                          ? column.renderHeader.call(this._renderProxy, h, {
+                            column,
+                            $index: cellIndex,
+                            store: this.store,
+                            _self: this.$parent.$vnode.context
+                          })
                           : column.label
                       }
                     </div>
@@ -157,5 +161,9 @@ export default {
     getHeaderRowClass(rowIndex) {
       return '';
     },
+  },
+
+  created() {
+    this.filterPanels = {};
   }
 }

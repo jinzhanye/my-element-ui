@@ -127,7 +127,18 @@ watch: {
       owner.store.commit('insertColumn', this.columnConfig, columnIndex, this.isSubColumn ? parent.columnConfig : null);
   }
   ````
-    
+3. 设置列宽
+
+  ````js
+  const getDefaultColumn = function(type, options) {
+      // ......
+      if (!column.minWidth) {
+        column.minWidth = 80;
+      }
+      column.realWidth = column.width === undefined ? column.minWidth : column.width;
+      // ......
+  }
+  ````    
 ### table-store
 updateColumns 设置 columns，columns是_columns进行一系列操作后得到的
 

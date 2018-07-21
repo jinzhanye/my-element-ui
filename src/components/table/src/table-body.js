@@ -1,5 +1,9 @@
+import LayoutObserver from './layout-observer';
+
 export default {
   name: 'ElTableBody',
+
+  mixins: [LayoutObserver],
 
   props: {
     store: {
@@ -109,8 +113,21 @@ export default {
   },
 
   methods: {
+    getRowStyle(row, rowIndex) {
+      const rowStyle = this.table.rowStyle;
+      if (typeof rowStyle === 'function') {
+        return rowStyle.call(null, {
+          row,
+          rowIndex
+        });
+      }
+      return rowStyle;
+    },
+
     getRowClass(row, rowIndex) {
-      return '';
+      const classes = 'el-table__row';
+      // .......
+      return classes;
     },
 
     getCellStyle(rowIndex, columnIndex, row, column) {

@@ -23,8 +23,8 @@
         label="地址"/>
 
       <ElTableColumn
-        prop="address"
-        label="地址">
+        prop="enable"
+        label="可用">
         <template slot-scope="{ row }">
           <span>{{row.enable ? '是' : '否'}}</span>
         </template>
