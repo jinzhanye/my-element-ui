@@ -21,6 +21,14 @@
       <ElTableColumn
         prop="address"
         label="地址"/>
+
+      <ElTableColumn
+        prop="address"
+        label="地址">
+        <template slot-scope="{ row }">
+          <span>{{row.enable ? '是' : '否'}}</span>
+        </template>
+      </ElTableColumn>
     </ElTable>
   </div>
 </template>
@@ -35,22 +43,22 @@ export default {
         date: new Date(),
         name: '王小虎',
         address: '上海市普陀区金沙江路 1518 弄',
-        enable:true,
+        enable: true,
       }, {
         date: new Date(),
         name: '王小虎',
         address: '上海市普陀区金沙江路 1517 弄',
-        enable:false,
+        enable: false,
       }, {
         date: new Date(),
         name: '王小虎',
         address: '上海市普陀区金沙江路 1519 弄',
-        enable:true,
+        enable: true,
       }, {
         date: new Date(),
         name: '王小虎',
         address: '上海市普陀区金沙江路 1516 弄',
-        enable:true,
+        enable: true,
       }]
     };
   },

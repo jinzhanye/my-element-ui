@@ -134,7 +134,7 @@ export default {
       }
       return parent;
     },
-    columnOrTableParent() {
+    columnOrTableParent() {// 寻找拥有tableId 或 columnId的外层组件
       let parent = this.$parent;
       while (parent && !parent.tableId && !parent.columnId) {
         parent = parent.$parent;
@@ -192,10 +192,13 @@ export default {
       }
 
       if (!renderCell) {// table-header不渲染index的栏走这里，
+        /*<div className="cell">王小虎</div>*/
         renderCell = DEFAULT_RENDER_CELL;
       }
 
-      /*<div className="cell">王小虎</div>*/
+      //<ElTableColumn
+      //  type="index"
+      //  width="50"/>
       return <div className="cell">{renderCell(createElement, data)}</div>;
     };
   },

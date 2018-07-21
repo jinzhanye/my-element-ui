@@ -97,6 +97,29 @@ watch: {
   
 ### table-column
 1. created:生成column，并为column绑定`renderCell函数`供table-body使用
+
+  ````js
+   // 提供给table-body， table-body.js line 69
+      column.renderCell = function (createElement, data) {
+        if (_self.$scopedSlots.default) {
+          renderCell = () => _self.$scopedSlots.default(data);
+          //<template slot-scope="{row}">
+          //<span>{{row.frequentlyUsed | formatBoolean}}</span>
+          //</template>
+        }
+  
+        if (!renderCell) {// table-header不渲染index列的走这里，
+          /*<div className="cell">王小虎</div>*/
+          renderCell = DEFAULT_RENDER_CELL;
+        }
+  
+        //  <ElTableColumn
+        //      type="index"
+        //      width="50"/>
+        return <div className="cell">{renderCell(createElement, data)}</div>;
+      };
+  ````
+
 2. mounted:给state._columns数组填充数据
 
   ````
@@ -104,7 +127,7 @@ watch: {
       owner.store.commit('insertColumn', this.columnConfig, columnIndex, this.isSubColumn ? parent.columnConfig : null);
   }
   ````
-  
+    
 ### table-store
 updateColumns 设置 columns，columns是_columns进行一系列操作后得到的
 
