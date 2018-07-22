@@ -6,11 +6,12 @@ class TableLayout {
     this.observers = [];
     this.table = null;
     this.store = null;
-    this.bodyWidth = null;
     this.columns = null;
+    this.fit = true;
     this.showHeader = true;
 
     this.height = null;
+    this.bodyWidth = null;
     this.gutterWidth = scrollbarWidth();
 
     for (let name in options) {
@@ -27,11 +28,6 @@ class TableLayout {
     }
   }
 
-  setHeight(value, prop = 'height') {
-    if (Vue.prototype.$isServer) return;
-    this.updateElsHeight();
-  }
-
   updateElsHeight() {
     this.notifyObservers('scrollable');
   }
@@ -46,13 +42,15 @@ class TableLayout {
         flattenColumns.push(column);
       }
     });
-
     return flattenColumns;
   }
 
   updateColumnsWidth() {
     if (Vue.prototype.$isServer) return;
+
+    // constructor中fit默认为true
     const fit = this.fit;
+
     const bodyWidth = this.table.$el.clientWidth;
     let bodyMinWidth = 0;
 
@@ -62,14 +60,12 @@ class TableLayout {
     flattenColumns.forEach((column) => { // Clean those columns whose width changed from flex to unflex
       if (typeof column.width === 'number' && column.realWidth) column.realWidth = null;
     });
-
     if (flexColumns.length > 0 && fit) {
       flattenColumns.forEach((column) => {
         bodyMinWidth += column.width || column.minWidth || 80;
       });
 
       const scrollYWidth = this.scrollY ? this.gutterWidth : 0;
-
       if (bodyMinWidth <= bodyWidth - scrollYWidth) { // DON'T HAVE SCROLL BAR
         this.scrollX = false;
 
@@ -91,28 +87,10 @@ class TableLayout {
 
           flexColumns[0].realWidth = (flexColumns[0].minWidth || 80) + totalFlexWidth - noneFirstWidth;
         }
-      } else { // HAVE HORIZONTAL SCROLL BAR
-        this.scrollX = true;
-        flexColumns.forEach(function(column) {
-          column.realWidth = column.minWidth;
-        });
       }
 
       this.bodyWidth = Math.max(bodyMinWidth, bodyWidth);
       this.table.resizeState.width = this.bodyWidth;
-    } else {
-      flattenColumns.forEach((column) => {
-        if (!column.width && !column.minWidth) {
-          column.realWidth = 80;
-        } else {
-          column.realWidth = column.width || column.minWidth;
-        }
-
-        bodyMinWidth += column.realWidth;
-      });
-      this.scrollX = bodyMinWidth > bodyWidth;
-
-      this.bodyWidth = bodyMinWidth;
     }
 
     this.notifyObservers('columns');

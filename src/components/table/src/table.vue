@@ -142,26 +142,6 @@ export default {
     },
 
     bindEvents() {
-      const { headerWrapper, footerWrapper } = this.$refs;
-      const refs = this.$refs;
-      let self = this;
-
-      this.bodyWrapper.addEventListener('scroll', function() {
-        if (headerWrapper) headerWrapper.scrollLeft = this.scrollLeft;
-        if (footerWrapper) footerWrapper.scrollLeft = this.scrollLeft;
-        if (refs.fixedBodyWrapper) refs.fixedBodyWrapper.scrollTop = this.scrollTop;
-        if (refs.rightFixedBodyWrapper) refs.rightFixedBodyWrapper.scrollTop = this.scrollTop;
-        const maxScrollLeftPosition = this.scrollWidth - this.offsetWidth - 1;
-        const scrollLeft = this.scrollLeft;
-        if (scrollLeft >= maxScrollLeftPosition) {
-          self.scrollPosition = 'right';
-        } else if (scrollLeft === 0) {
-          self.scrollPosition = 'left';
-        } else {
-          self.scrollPosition = 'middle';
-        }
-      });
-
       if (this.fit) {
         addResizeListener(this.$el, this.resizeListener);
       }
