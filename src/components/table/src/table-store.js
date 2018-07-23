@@ -15,7 +15,6 @@ const TableStore = function (table, initialState = {}) {
     data: null,
   };
 
-  // 属性拷贝
   for (let prop in initialState) {
     if (initialState.hasOwnProperty(prop) && this.states.hasOwnProperty(prop)) {
       this.states[prop] = initialState[prop];
@@ -26,17 +25,10 @@ const TableStore = function (table, initialState = {}) {
 const doFlattenColumns = (columns) => {
   const result = [];
   columns.forEach((column) => {
-    if (column.children) {
-      result.push.apply(result, doFlattenColumns(column.children));
-    } else {
-      result.push(column);
-    }
+    // .....
+    result.push(column);
   });
   return result;
-};
-
-TableStore.prototype.setCurrentRowKey = function (key) {
-
 };
 
 // 重新规划布局
@@ -65,19 +57,15 @@ TableStore.prototype.updateColumns = function () {
 TableStore.prototype.mutations = {
   // table.vue watch.data 调用
   setData(states, data) {
-    const dataInstanceChanged = states._data !== data;
+    // ......
     states._data = data;
     states.data = data;
+    // ......
   },
 
   insertColumn(states, column, index, parent) {
     let array = states._columns;
-    if (parent) {
-      array = parent.children;
-      if (!array) {
-        array = parent.children = [];
-      }
-    }
+    // ......
 
     if (typeof index !== 'undefined') {
       // 在index的位置插入column
@@ -86,11 +74,7 @@ TableStore.prototype.mutations = {
       array.push(column);
     }
 
-    // 只有在表格渲染后动态添加列才会执行以下
-    if (this.table.$ready) {
-      this.updateColumns(); // hack for dynamics insert column
-      this.scheduleLayout();
-    }
+    // .....
   },
 
   removeColumn(states, column, parent) {
@@ -109,6 +93,7 @@ TableStore.prototype.mutations = {
     }
   }
 };
+
 TableStore.prototype.commit = function commit(name, ...args) {
   const mutations = this.mutations;
   if (mutations[name]) {

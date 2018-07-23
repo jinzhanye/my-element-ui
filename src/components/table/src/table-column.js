@@ -119,7 +119,6 @@ export default {
       }
     },
 
-
     width(newVal) {
       if (this.columnConfig) {
         this.columnConfig.width = parseWidth(newVal);
@@ -152,6 +151,8 @@ export default {
   },
 
   created() {
+    console.log('table-column created');
+
     this.customRender = this.$options.render;// 暂时未清楚customRender在哪里使用
     this.$options.render = createElement => createElement('div', this.$slots.default);
 
@@ -184,7 +185,7 @@ export default {
     let renderCell = column.renderCell;
     let _self = this;
 
-    // 提供给table-body， table-body.js line 69
+    // 提table-body使用， table-body.js line 69
     column.renderCell = function (createElement, data) {
       if (_self.$scopedSlots.default) {
         renderCell = () => _self.$scopedSlots.default(data);
@@ -206,6 +207,8 @@ export default {
   },
 
   mounted() {
+    console.log('table-column mounted');
+
     const owner = this.owner;
     const parent = this.columnOrTableParent;
     let columnIndex;

@@ -71,13 +71,13 @@ export default {
   },
 
   created() {
-    this.$on('hello', (d) => {
-      console.log(d);
-    });
+    // this.$on('hello', (d) => {
+    //   console.log(d);
+    // });
   },
 
   mounted() {
-    this.$emit('hello', 'hahahaha');
+    // this.$emit('hello', 'event test');
   }
 };
 </script>

@@ -31,16 +31,14 @@ export default {
       return this.store.states.data;
     },
 
-    columnsCount() {
-      return this.store.states.columns.length;
-    },
-
     columns() {
       return this.store.states.columns;
     },
   },
 
   render(createElement) {
+    console.log('table-body render');
+
     const columnsHidden = this.columns.map((column, index) => this.isColumnHidden(index));
     return (
       <table
@@ -152,4 +150,11 @@ export default {
       return false;
     },
   },
+
+  created() {
+    console.log('table-body created');
+  },
+  mounted() {
+    console.log('table-body mounted');
+  }
 };

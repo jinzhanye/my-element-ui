@@ -114,7 +114,7 @@ export default {
 
   methods: {
     doLayout() {
-      console.log('doLayout executed');
+      // console.log('doLayout executed');
       this.layout.updateColumnsWidth();
     },
 
@@ -149,6 +149,7 @@ export default {
   },
 
   created() {
+    console.log('table created');
     this.tableId = `el-table_${tableIdSeed}`;
     tableIdSeed += 1;
     // 提供给table-store的TableStore.prototype.scheduleLayout使用
@@ -158,6 +159,7 @@ export default {
   mounted() {
     this.bindEvents();
     // 更新columns与originColumns从而触发table-header、table-body更新
+    console.log('table mounted ，调用updateColumns触发 table-header、table-body更新');
     this.store.updateColumns();
 
     this.resizeState = {

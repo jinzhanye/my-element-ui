@@ -93,6 +93,7 @@ export default {
   },
 
   render(createElement) {
+    console.log('table-header render');
     // originColumns的更新与 computed.columns一样
     const originColumns = this.store.states.originColumns;
     // 非多级表头情况下，columnRows是一个嵌套数组 [[col1,col2,col3,...]]
@@ -164,6 +165,10 @@ export default {
   },
 
   created() {
+    console.log('table-header created');
     this.filterPanels = {};
+  },
+  mounted() {
+    console.log('table-header mounted');
   }
 }

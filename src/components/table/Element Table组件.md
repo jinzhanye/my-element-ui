@@ -1,46 +1,46 @@
-colgroup 调整列宽度
+# Element UI table组件源码分析
+## 结构
 ````html
-<colgroup>
-  <col name="el-table_21_column_90" width="180">
-  <col name="el-table_21_column_91" width="180">
-  <col name="el-table_21_column_92" width="460">
-</colgroup>
+<template>
+  <div class="el-table">
+    <!-- 隐藏列: slot里容纳table-column -->
+    <div class="hidden-columns" ref="hiddenColumns">
+      <slot></slot>
+    </div>
+
+    <div class="el-table__header-wrapper"
+         ref="headerWrapper">
+      <table-header ref="tableHeader"
+                    :store="store">
+      </table-header>
+    </div>
+
+    <div class="el-table__body-wrapper"
+         ref="bodyWrapper">
+      <table-body :context="context"
+                  :store="store">                  
+      </table-body>
+    </div>
+  </div>
+</template>
 ````
 
-_l render函数中 用来渲染list的方法
+table、table-header、table-body、table-column之间通过table-store进行状态管理
 
-更抽象一点来看，我们可以把组件区分为两类：一类是偏视图表现的 (presentational)，一类则是偏逻辑的 (logical)。我们推荐在前者中使用模板，在后者中使用 JSX 或渲染函数。
-这两类组件的比例会根据应用类型的不同有所变化，但整体来说我们发现表现类的组件远远多于逻辑类组件。
+table-header、table-body、table-column通过render函数进行渲染
 
-table、table-header、table-column之间通过table-store共享数据
+## 初始化顺序
+![image](https://ws3.sinaimg.cn/large/006tNc79gy1ftjm8s7o5uj30k307kmxz.jpg)
 
-this.customRender = this.$options.render;
-this.$options.render = createElement => createElement('div', this.$slots.default);
-
-table-layout是对整个表格宽高等布局进行修改的。 简单的表格暂用不上
- 
-### table
+## table
 1. 初始化store与layout
 
-````js
+````
 data() {
   const store = new TableStore(this);
-  const layout = new TableLayout({
-    store,
-    table: this,
-  });
   return {
-    layout, // layout-observer会引用到layout
     store,
   };
-}
-````
-
-````js
-const TableStore = function (table, initialState = {}) {
-  // .....
-  this.table = table;
-  // .....
 }
 ````
 
@@ -93,9 +93,8 @@ mounted() {
     this.$ready = true;
 }     
 ````
-  
 
-### table-column
+## table-column
 1. 生成column，并为column绑定`renderCell函数`供table-body使用
 
 ````js
@@ -147,20 +146,8 @@ created(){
       owner.store.commit('insertColumn', this.columnConfig, columnIndex, this.isSubColumn ? parent.columnConfig : null);
   }
   ````
-  
-3. 设置列宽
 
-  ````js
-  const getDefaultColumn = function(type, options) {
-      // ......
-      if (!column.minWidth) {
-        column.minWidth = 80;
-      }
-      column.realWidth = column.width === undefined ? column.minWidth : column.width;
-      // ......
-  }
-  ````    
-### table-store
+## table-store
 向_columns填充数据
 
 ````js
@@ -176,11 +163,7 @@ TableStore.prototype.mutations = {
       array.push(column);
     }
 
-    // 只有在表格渲染后动态添加列才会执行以下
-    if (this.table.$ready) {
-      this.updateColumns(); // hack for dynamics insert column
-      this.scheduleLayout();
-    }
+    // .....
   },
 }
 ````
@@ -202,7 +185,7 @@ TableStore.prototype.updateColumns = function() {
 }
 `````
 
-### table-header、table-body
+## table-header、table-body
 table-header、table-body都拥有以下属性
 
 ````
@@ -235,6 +218,3 @@ render(){
     },
   },
 ````
-
-## 初始化顺序
-![image](https://ws3.sinaimg.cn/large/006tNc79gy1ftjm8s7o5uj30k307kmxz.jpg)
