@@ -3,49 +3,33 @@
     <h1>{{ msg }}</h1>
     <h2>Essential Links</h2>
 
-    <!--<ElTable-->
-      <!--:data="tableData"-->
-      <!--style="width: 100%">-->
-      <!--<ElTableColumn-->
-        <!--type="index"-->
-        <!--width="50"/>-->
-      <!--<ElTableColumn-->
-        <!--prop="date"-->
-        <!--label="日期"-->
-        <!--width="180"-->
-        <!--:formatter="dateFormatter"/>-->
-      <!--<ElTableColumn-->
-        <!--prop="name"-->
-        <!--label="姓名"-->
-        <!--width="180"/>-->
-      <!--<ElTableColumn-->
-        <!--prop="address"-->
-        <!--label="地址"/>-->
+    <ElTable
+      :data="tableData"
+      style="width: 100%">
+      <ElTableColumn
+        type="index"
+        width="50"/>
+      <ElTableColumn
+        prop="date"
+        label="日期"
+        width="180"
+        :formatter="dateFormatter"/>
+      <ElTableColumn
+        prop="name"
+        label="姓名"
+        width="180"/>
+      <ElTableColumn
+        prop="address"
+        label="地址"/>
 
-      <!--<ElTableColumn-->
-        <!--prop="enable"-->
-        <!--label="可用">-->
-        <!--<template slot-scope="{ row }">-->
-          <!--<span>{{row.enable ? '是' : '否'}}</span>-->
-        <!--</template>-->
-      <!--</ElTableColumn>-->
-    <!--</ElTable>-->
-
-    <ElMenu default-active="reportTemplateList"
-            style="min-height: 100%;">
-      <ElSubmenu index="1">
-        <template slot="title">报告模版</template>
-        <ElMenuItem index="reportTemplateList">报告模版列表</ElMenuItem>
-        <ElMenuItem index="reportTemplateImage">报告图例</ElMenuItem>
-      </ElSubmenu>
-
-      <El-submenu index="2">
-        <template slot="title">支付</template>
-        <ElMenuItem index="reportGradeList">套餐列表</ElMenuItem>
-      </El-submenu>
-
-      <ElMenuItem index="countryList">国家列表</ElMenuItem>
-    </ElMenu>
+      <ElTableColumn
+        prop="enable"
+        label="可用">
+        <template slot-scope="{ row }">
+          <span>{{row.enable ? '是' : '否'}}</span>
+        </template>
+      </ElTableColumn>
+    </ElTable>
 
   </div>
 </template>

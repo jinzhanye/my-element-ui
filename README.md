@@ -10,10 +10,11 @@
 
 
 ## 工具类
-````js
-import { addClass, removeClass, hasClass } from 'element-ui/src/utils/dom';
-````
+- dom dom相关操作
+- emitter 父组件与子组件事件通讯使用
 
+
+## 其他
 - 函数式组件，为组件提供包装时使用
 
-menu.vue
+例如menu.vue，使用el-menu-collapse-transition包装menu

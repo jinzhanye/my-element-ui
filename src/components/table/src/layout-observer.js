@@ -1,4 +1,3 @@
-/* eslint-disable no-underscore-dangle */
 export default {
   computed: {
     tableLayout() {
@@ -32,9 +31,6 @@ export default {
         }
       }
     },
-    onScrollableChange() {
-      // TODO
-    },
   },
 
   created() {
@@ -43,13 +39,11 @@ export default {
 
   mounted() {
     this.onColumnsChange();
-    this.onScrollableChange();
   },
 
   updated() {
     if (this.__updated__) return;
     this.onColumnsChange(this.tableLayout);
-    this.onScrollableChange(this.tableLayout);
     this.__updated__ = true;
   },
 

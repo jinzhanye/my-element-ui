@@ -28,10 +28,6 @@ class TableLayout {
     }
   }
 
-  updateElsHeight() {
-    this.notifyObservers('scrollable');
-  }
-
   getFlattenColumns() {
     const flattenColumns = [];
     const columns = this.table.columns;
@@ -113,9 +109,6 @@ class TableLayout {
       switch (event) {
         case 'columns':
           observer.onColumnsChange(this);
-          break;
-        case 'scrollable':
-          observer.onScrollableChange(this);
           break;
         default:
           throw new Error(`Table Layout don't have event ${event}.`);
