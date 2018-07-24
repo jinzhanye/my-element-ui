@@ -4,10 +4,12 @@ import SubMenu from './components/submenu';
 import Table from './components/table';
 import TableColumn from './components/table-column';
 import messageFactory from './components/message';
+import Tree from './components/tree';
 
 const components = [
   Table,
   TableColumn,
+  Tree,
   Menu,
   MenuItem,
   SubMenu
