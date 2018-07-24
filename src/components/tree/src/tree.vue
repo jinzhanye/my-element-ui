@@ -2,11 +2,11 @@
   <div class="el-tree"
        role="tree">
     run success
-    <!--<el-tree-node v-for="child in root.childNodes"-->
-                  <!--:node="child"-->
-                  <!--:props="props"-->
-                  <!--@node-expand="handleNodeExpand">-->
-    <!--</el-tree-node>-->
+    <el-tree-node v-for="child in root.childNodes"
+                  :node="child"
+                  :props="props"
+                  @node-expand="handleNodeExpand">
+    </el-tree-node>
   </div>
 </template>
 
@@ -39,6 +39,10 @@ export default {
         }
       }
     },
+    indent: {// 树节点缩进
+      type: Number,
+      default: 18
+    }
   },
 
   computed: {
@@ -71,6 +75,8 @@ export default {
   },
 
   created() {
+    this.isTree = true;
+
     this.store = new TreeStore({
       key: this.nodeKey,
       data: this.data,

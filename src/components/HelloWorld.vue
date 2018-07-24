@@ -1,36 +1,6 @@
 <template>
   <div class="hello">
     <h1>{{ msg }}</h1>
-    <h2>Essential Links</h2>
-
-    <ElTable
-      :data="tableData"
-      style="width: 100%">
-      <ElTableColumn
-        type="index"
-        width="50"/>
-      <ElTableColumn
-        prop="date"
-        label="日期"
-        width="180"
-        :formatter="dateFormatter"/>
-      <ElTableColumn
-        prop="name"
-        label="姓名"
-        width="180"/>
-      <ElTableColumn
-        prop="address"
-        label="地址"/>
-
-      <ElTableColumn
-        prop="enable"
-        label="可用">
-        <template slot-scope="{ row }">
-          <span>{{row.enable ? '是' : '否'}}</span>
-        </template>
-      </ElTableColumn>
-    </ElTable>
-
     <ElTree :data="data" :props="defaultProps" @node-click="handleNodeClick"></ElTree>
   </div>
 </template>
@@ -79,49 +49,15 @@ export default {
       defaultProps: {
         children: 'children',
         label: 'label'
-      },
-      tableData: [{
-        date: new Date(),
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1518 弄',
-        enable: true,
-      }, {
-        date: new Date(),
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1517 弄',
-        enable: false,
-      }, {
-        date: new Date(),
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1519 弄',
-        enable: true,
-      }, {
-        date: new Date(),
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1516 弄',
-        enable: true,
-      }]
+      }
     };
   },
 
   methods: {
-    dateFormatter(row, column, value, index) {
-      return row.date.toString();
-    },
     handleNodeClick(data) {
       console.log(data);
     }
   },
-
-  created() {
-    // this.$on('hello', (d) => {
-    //   console.log(d);
-    // });
-  },
-
-  mounted() {
-    // this.$emit('hello', 'event test');
-  }
 };
 </script>
 

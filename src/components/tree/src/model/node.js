@@ -1,6 +1,21 @@
 import objectAssign from 'element-ui/src/utils/merge';
 import { markNodeData, NODE_KEY } from './util';
 
+const getPropertyFromData = function(node, prop) {
+  const props = node.store.props;
+  const data = node.data || {};
+  const config = props[prop];
+
+  if (typeof config === 'function') {
+    return config(data, node);
+  } else if (typeof config === 'string') {
+    return data[config];
+  } else if (typeof config === 'undefined') {
+    const dataProp = data[prop];
+    return dataProp === undefined ? '' : dataProp;
+  }
+};
+
 let nodeIdSeed = 0;
 
 export default class Node {
@@ -9,9 +24,9 @@ export default class Node {
     this.text = null;
     this.checked = false;
     this.indeterminate = false;// ??
-    this.data = null;
+    this.data = null;// important
     this.expanded = false;
-    this.parent = null;
+    this.parent = null;// important
     this.visible = true;
 
     for (let name in options) {
@@ -37,7 +52,7 @@ export default class Node {
     store.registerNode(this);
 
     const props = store.props;
-    if (props && typeof props.isLeaf !== 'undefined') {// ??
+    if (props && typeof props.isLeaf !== 'undefined') {
       const isLeaf = getPropertyFromData(this, 'isLeaf');
       if (typeof isLeaf === 'boolean') {
         this.isLeafByUser = isLeaf;
@@ -55,8 +70,9 @@ export default class Node {
     if (!Array.isArray(this.data)) {
       markNodeData(this, this.data);
     }
-    if (!this.data) return;
 
+    if (!this.data) return;
+    const key = store.key;
     if (key && store.currentNodeKey !== undefined && this.key === store.currentNodeKey) {
       store.currentNode = this;
     }
@@ -64,10 +80,35 @@ export default class Node {
     this.updateLeafState();
   }
 
+  setData(data) {
+    if (!Array.isArray(data)) {
+      markNodeData(this, data);
+    }
+
+    this.data = data;
+    this.childNodes = [];
+
+    let children;
+    if (this.level === 0 && this.data instanceof Array) {
+      children = this.data;
+    } else {
+      children = getPropertyFromData(this, 'children') || [];
+    }
+
+    for (let i = 0, j = children.length; i < j; i++) {
+      this.insertChild({ data: children[i] });
+    }
+  }
+
   updateLeafState() {
+    if (this.store.lazy === true && this.loaded !== true && typeof this.isLeafByUser !== 'undefined') {
+      this.isLeaf = this.isLeafByUser;
+      return;
+    }
     const childNodes = this.childNodes;
     if (!this.store.lazy || (this.store.lazy === true && this.loaded === true)) {
       this.isLeaf = !childNodes || childNodes.length === 0;
+      return;
     }
     this.isLeaf = false;
   }
@@ -120,6 +161,7 @@ export default class Node {
         parent: this,
         store: this.store
       });
+      // 递归new Node
       child = new Node(child);
     }
 
@@ -135,16 +177,34 @@ export default class Node {
   }
 
   getChildren(forceInit = false) {
-    if (this.level === 0) {
+    if (this.level === 0) {// 根节点的孩子就是data数组
       return this.data;
     }
     const data = this.data;
     if (!data) return null;
 
-    // TODO
+    const props = this.store.props;
+    let children = 'children';
+    if (props) {// 替换props
+      children = props.children || 'children';
+    }
+
+    if (data[children] === undefined) {
+      data[children] = null;
+    }
+
+    if (forceInit && !data[children]) {
+      data[children] = [];
+    }
+
+    return data[children];
   }
 
   removeChild(child) {
 
+  }
+
+  get label() {
+    return getPropertyFromData(this, 'label');
   }
 }

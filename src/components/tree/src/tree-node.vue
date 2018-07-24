@@ -5,6 +5,7 @@
 
     <div class="el-tree-node__content"
          :style="{ 'padding-left': (node.level - 1) * tree.indent + 'px' }">
+      <!--expanded样式控制箭头向右还是向下-->
       <span class="el-tree-node__expand-icon el-icon-caret-right"
             @click.stop="handleExpandIconClick"
             :class="{ 'is-leaf': node.isLeaf, expanded: !node.isLeaf && expanded }"></span>
@@ -17,12 +18,11 @@
          role="group">
       <!--递归组件-->
       <el-tree-node v-for="child in node.childNodes"
-                    :render-after-expand="renderAfterExpand"
                     :node="child"
+                    :render-after-expand="renderAfterExpand"
                     @node-expand="handleChildNodeExpand">
       </el-tree-node>
     </div>
-
   </div>
 </template>
 
@@ -53,6 +53,7 @@ export default {
     return {
       tree: null,
       expanded: false,
+      childNodeRendered: false,
     }
   },
 
@@ -81,6 +82,7 @@ export default {
 
   watch: {
     'node.expanded'(val) {
+      debugger
       // TODO ???
       this.$nextTick(() => this.expanded = val);
       if (val) {
@@ -128,12 +130,13 @@ export default {
     const props = tree.props || {};
     const childrenKey = props['children'] || 'children';
 
-    if (this.tree.accordion) {// accordion 可折叠的
-      this.$on('tree-node-expand', node => {
-        if (this.node !== node) {
-          this.node.collapse();
-        }
-      });
+    this.$watch(`node.data.${childrenKey}`, () => {
+      this.node.updateChildren();
+    });
+
+    if (this.node.expanded) {
+      this.expanded = true;
+      this.childNodeRendered = true;
     }
   }
 }
