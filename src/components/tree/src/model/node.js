@@ -35,7 +35,7 @@ export default class Node {
       }
     }
 
-    //internal
+    // internal
     this.level = 0;
     this.loaded = false;
     this.childNodes = [];
@@ -49,10 +49,12 @@ export default class Node {
     if (!store) {
       throw new Error('[Node]store is required!');
     }
+    // 注册树节点与nodeKey的映射关系
     store.registerNode(this);
 
     const props = store.props;
     if (props && typeof props.isLeaf !== 'undefined') {
+      // 获取指定子节点的字段的数据，可以通过数据中某个字段来指定是否是子节点
       const isLeaf = getPropertyFromData(this, 'isLeaf');
       if (typeof isLeaf === 'boolean') {
         this.isLeafByUser = isLeaf;
@@ -86,10 +88,12 @@ export default class Node {
     }
 
     this.data = data;
+    // 当data更新时，将旧数据清空，insertChild会给childNodes填充数据，重新构造树节点
     this.childNodes = [];
 
     let children;
     if (this.level === 0 && this.data instanceof Array) {
+      // root节点的孩子就是开发者传入的data
       children = this.data;
     } else {
       children = getPropertyFromData(this, 'children') || [];
@@ -145,23 +149,13 @@ export default class Node {
 
   insertChild(child, index, batch) {
     if (!child) throw new Error('insertChild error: child is required.');
-
     if (!(child instanceof Node)) {
-      if (!batch) {
-        const children = this.getChildren(true);
-        if (children.indexOf(child.data) === -1) {
-          if (typeof index === 'undefined' || index < 0) {
-            children.push(child.data);
-          } else {
-            children.splice(index, 0, child.data);
-          }
-        }
-      }
+      // ....
       objectAssign(child, {
         parent: this,
         store: this.store
       });
-      // 递归new Node
+      // 递归构造Node
       child = new Node(child);
     }
 
@@ -172,6 +166,32 @@ export default class Node {
     } else {
       this.childNodes.splice(index, 0, child);
     }
+
+    this.updateLeafState();
+  }
+
+  updateChildren() {
+    const newData = this.getChildren() || [];
+    const oldData = this.childNodes.map((node) => node.data);
+
+    const newDataMap = {};
+    const newNodes = [];
+
+    newData.forEach((item, index) => {
+      if (item[NODE_KEY]) {
+        newDataMap[item[NODE_KEY]] = { index, data: item };
+      } else {
+        newNodes.push({ index, data: item });
+      }
+    });
+
+    oldData.forEach((item) => {
+      if (!newDataMap[item[NODE_KEY]]) this.removeChildByData(item);
+    });
+
+    newNodes.forEach(({ index, data }) => {
+      this.insertChild({ data }, index);
+    });
 
     this.updateLeafState();
   }

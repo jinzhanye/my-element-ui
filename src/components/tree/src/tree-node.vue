@@ -51,7 +51,7 @@ export default {
 
   data() {
     return {
-      tree: null,
+      tree: null,// tree组件引用
       expanded: false,
       childNodeRendered: false,
     }
@@ -82,10 +82,8 @@ export default {
 
   watch: {
     'node.expanded'(val) {
-      debugger
-      // TODO ???
-      this.$nextTick(() => this.expanded = val);
-      if (val) {
+      this.$nextTick(() => this.expanded = val);// 标识儿子节点是否展开
+      if (val) {// 标识儿子节点是否已经渲染
         this.childNodeRendered = true;
       }
     }
@@ -116,6 +114,7 @@ export default {
   created() {
     const parent = this.$parent;
 
+    // 使每个tree-node组件都保存一个tree组件的引用
     if (parent.isTree) {
       this.tree = parent;
     } else {
@@ -130,7 +129,7 @@ export default {
     const props = tree.props || {};
     const childrenKey = props['children'] || 'children';
 
-    this.$watch(`node.data.${childrenKey}`, () => {
+    this.$watch(`node.data.${childrenKey}`, () => {// 对原始数据进行监听
       this.node.updateChildren();
     });
 

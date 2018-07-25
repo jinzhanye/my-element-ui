@@ -1,7 +1,6 @@
 <template>
   <div class="el-tree"
        role="tree">
-    run success
     <el-tree-node v-for="child in root.childNodes"
                   :node="child"
                   :props="props"
@@ -46,7 +45,7 @@ export default {
   },
 
   computed: {
-    children: {
+    children: {// ??? 只有get被调用过，但不清楚哪里调用
       set(value) {
         this.data = value;
       },
@@ -62,7 +61,7 @@ export default {
 
   watch: {
     data(newVal) {
-      // 为this.root.childNodes填充数据供ElTreeNode使用
+      // 当data改变时刷新this.root.childNodes
       this.store.setData(newVal);
     },
   },
@@ -77,12 +76,13 @@ export default {
   created() {
     this.isTree = true;
 
+    // 将data包装成root节点
     this.store = new TreeStore({
       key: this.nodeKey,
       data: this.data,
       props: this.props
     });
-
+    // 供 tree-node 使用
     this.root = this.store.root;
   },
 

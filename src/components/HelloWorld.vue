@@ -9,15 +9,23 @@
 export default {
   name: 'HelloWorld',
   data() {
+    const testChilds = [{
+      label: '三级 1-1-1',
+      children: [],
+    }];
+    setTimeout(() => {
+      testChilds[0].children.push({
+        label: '四级 1-1-1-1',
+      });
+      debugger
+    }, 2000);
     return {
       msg: 'Welcome to Your Vue.js App',
       data: [{
         label: '一级 1',
         children: [{
           label: '二级 1-1',
-          children: [{
-            label: '三级 1-1-1'
-          }]
+          children: testChilds,
         }]
       }, {
         label: '一级 2',
