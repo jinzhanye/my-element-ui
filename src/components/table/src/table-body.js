@@ -88,7 +88,7 @@ export default {
                     {
                       column.renderCell.call(
                         this._renderProxy,
-                        h,
+                        createElement,
                         {
                           row,
                           column,
